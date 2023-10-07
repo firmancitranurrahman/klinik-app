@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
             // 'is_password_changed'=>'1',
             'email_verified_at' => now(),
             // 'kota' => Reffkota::all()->random()->id,
-
+            'spesialisasi'=>'spesialis jantung',
             'password' => bcrypt('12345678'),
         ]);
         $user->assignRole('dokter');

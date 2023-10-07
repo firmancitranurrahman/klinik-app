@@ -19,6 +19,7 @@
                         <h3 class="box-title">List Data Klinik</h3>
                     </div>
                     <div class="box-body">
+                        <div id="loading-message">Sedang memuat data...</div>
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>

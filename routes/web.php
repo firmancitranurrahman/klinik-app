@@ -39,8 +39,9 @@ Route::post('/storeklinik',[KlinikController::class,'storeklinik'])->name('store
 // ===== DOKTER ==== //
 Route::get('/listdatadokter',[DokterController::class,'listdatadokter'])->name('listdatadokter');
 Route::get('/tambahdatadokter',[DokterController::class,'tambahdatadokter'])->name('tambahdatadokter');
+Route::post('/storedokter',[DokterController::class,'storedokter'])->name('storedokter');
 
-Route::post('/storedokter',[UserController::class,'storedokter'])->name('storedokter');
+// Route::post('/storedokter',[UserController::class,'storedokter'])->name('storedokter');
 Route::get('/jadwalpraktekdokter',[DokterController::class,'jadwalpraktekdokter'])->name('jadwalpraktekdokter');
 
 

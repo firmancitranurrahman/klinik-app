@@ -173,6 +173,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route('listdatadokter') }}"><i class="fa fa-circle-o"></i> List Data Dokter</a></li>
+            {{-- <li><a href="{{ route('listspesialisasi') }}"><i class="fa fa-circle-o"></i>List Data Spesialisasi</a></li> --}}
             <li><a href="{{ route('tambahdatadokter') }}"><i class="fa fa-circle-o"></i>Tambah Data Dokter</a></li>
           </ul>
         </li>
@@ -200,6 +201,8 @@
             <li><a href="{{ 'tambahdatapasien' }}"><i class="fa fa-circle-o"></i> Tambah Data Pasien</a></li>
           </ul>
         </li>
+        <li class="header">JADWAL PRAKTEK DOKTER</li>
+
         <li><a href="{{ 'jadwalpraktekdokter' }}"><i class="fa fa-calendar-times-o"></i><span>Atur Jadwal Praktek</span></a></li>
         <li class="header">LABELS</li>
         <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
@@ -417,6 +420,8 @@
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- jQuery 3 -->
@@ -465,7 +470,17 @@
   })
 </script>
 
-
+<script>
+  document.getElementById("printButton").addEventListener("click", function() {
+      const doc = new jsPDF();
+      doc.autoTable({ html: "#jadwalTable" });
+  
+      // Simpan dan buka PDF dalam tab baru
+      const pdfDataUri = doc.output("datauristring");
+      const pdfWindow = window.open();
+      pdfWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+  });
+  </script>
 
 
 </body>
