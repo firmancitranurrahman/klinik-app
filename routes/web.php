@@ -28,6 +28,7 @@ Route::get('/index',[UserController::class,'index'])->name('index');
 // ===== USER ===== //
 Route::get('/listdatauser',[KlinikController::class,'listdatauser'])->name('listdatauser');
 
+// ==== SPESIALISASI ==== //
 
 
 // ==== KLINIK ==== //
@@ -43,13 +44,17 @@ Route::post('/storedokter',[DokterController::class,'storedokter'])->name('store
 
 // Route::post('/storedokter',[UserController::class,'storedokter'])->name('storedokter');
 Route::get('/jadwalpraktekdokter',[DokterController::class,'jadwalpraktekdokter'])->name('jadwalpraktekdokter');
-
+Route::get('/jadwalpraktekdokter/tambahjadwal',[DokterController::class,'jadwalpraktekdokter'])->name('tambahjadwal');
 
 // === PASIEN === //
 Route::get('/listdatapasien',[PasienController::class,'listdatapasien'])->name('listdatapasien');
 Route::get('/tambahdatapasien',[PasienController::class,'tambahdatapasien'])->name('tambahdatapasien');
 
-Route::post('/storepasien',[UserController::class,'storepasien'])->name('storepasien');
+Route::post('/storepasien',[PasienController::class,'storepasien'])->name('storepasien');
+
+
+
+Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak');
 
 Route::get('/logout',function(){
     auth::logout();

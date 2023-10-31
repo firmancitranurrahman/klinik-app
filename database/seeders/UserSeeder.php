@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         //
-        $user = User::create([
+       $user = User::create([
             'name' => 'Buyono',
             'email' => 'superadmin@gmail.com',
             // 'ip_address'=>'192.168.223.221',

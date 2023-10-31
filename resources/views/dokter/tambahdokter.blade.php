@@ -33,7 +33,12 @@
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="nama">Spesialisasi</label>
-                                        <input type="text" class="form-control" name="spesialisasi">
+                                        <select class="form-control" name="spesialisasi" id="">
+                                           <option value="">Pilih Spesialisasi</option>
+                                            @foreach ($spesialisasi as $sp)
+                                                <option value="{{ $sp->id }}">{{ $sp->nama_spesialisasi }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-7">

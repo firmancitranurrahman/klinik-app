@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Pasien extends Model
+{
+    use HasFactory;
+    protected $table='pasiens';
+
+    protected $fillable=[  
+        'name',
+        'umur',
+        'golongan_darah',
+        'no_kk',
+        'tgl_lahir',
+        'pekerjaan',
+        'status_pernikahan',
+        'kota',
+        'asuransi',
+        'email'
+    ];
+}

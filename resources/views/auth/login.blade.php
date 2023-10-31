@@ -31,7 +31,8 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Admin</b>LTE</a>
+    {{-- <a href="../../index2.html"><b>Admin</b>LTE</a> --}}
+    <a href="../../index2.html"><img src="{{ 'assets' }}/dist/img/arshaka2.png" alt=""></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">

@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\Dokter;
+use App\Models\Spesialisasi;
 
 class DokterController extends Controller
 {
     //
     public function tambahdatadokter(){
-        return view('dokter.tambahdokter');
+        $spesialisasi=Spesialisasi::all();
+        return view('dokter.tambahdokter',['spesialisasi'=>$spesialisasi]);
     }
 
     public function storedokter(Request $request){
@@ -33,15 +35,26 @@ class DokterController extends Controller
             'email'=>$request->email,
             
         ]);
-        // $user->assignRole('dokter');
+        // $dokter->assignRole('dokter');
         // return redirect('listdatadokter');
         return dd($dokter);
     }
       
 
+    public function prosesaturjadwal(Request $request,$id){
+
+    }
+
     public function jadwalpraktekdokter(){
         $dokter = User::role('dokter')->select('name','spesialisasi', 'alamat')->get();
-        
-        return view('dokter.jadwalpraktekdokter',['dokter'=>$dokter]);
+        $spesialisasi= Spesialisasi::all();
+        return view('dokter.jadwalpraktekdokter',['spesialisasi'=>$spesialisasi,'dokter'=>$dokter]);
     }
+
+    public function cekombak($spesialisasi){
+        $dokter= Dokter::where('spesialisasi=id','$spesialisasi')->get();
+        response()->json($dokter);
+    }
+
+
 }

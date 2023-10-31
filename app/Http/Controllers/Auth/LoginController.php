@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -38,5 +40,20 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    
+ public function authenticated(Request $request, $user){
+    $credential=$request->validate([
+        'email'=>'required',
+        'password'=>'required'
+    ]);
+    if(Auth::attempt($credential)){
+        if($user->hasRole('superadmin')){
+            $request->session()->regenerate();
+            flash('berhasil login');
+        }
+    else if($user->hasRole('admin')){
+        $request->session()->regenerate();
+        flash('berhasil login');
+    }
+}
+ }   
 }

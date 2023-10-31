@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="{{ 'assets' }}/bower_components/Ionicons/css/ionicons.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ 'assets' }}/dist/css/AdminLTE.min.css">
+   <!-- DataTables -->
+   <link rel="stylesheet" href="{{ 'assets' }}/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="{{ 'assets' }}/dist/css/skins/_all-skins.min.css">
@@ -29,6 +31,8 @@
   <link rel="stylesheet" href="{{ 'assets' }}/bower_components/bootstrap-daterangepicker/daterangepicker.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="{{ 'assets' }}/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="{{ 'assets' }}/extends.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -53,9 +57,13 @@
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      {{-- <span class="logo-mini"><b>A</b>LT</span> --}}
+
+      <span class="logo-mini">      <img src="{{ 'assets' }}/dist/img/arshaka2.png">
+      </span>
+
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>Arshaka</b>Medika</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -434,6 +442,9 @@
 </script>
 <!-- Bootstrap 3.3.7 -->
 <script src="{{ 'assets' }}/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- DataTables -->
+<script src="{{ 'assets' }}/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src=".{{ 'assets' }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- Morris.js charts -->
 <script src="{{ 'assets' }}/bower_components/raphael/raphael.min.js"></script>
 <script src="{{ 'assets' }}/bower_components/morris.js/morris.min.js"></script>
@@ -466,21 +477,136 @@
 <script src="{{ 'assets' }}/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
   $(function () {
-    $('#example1').DataTable()
+    $('#example1')({
+      "language": {
+			           "emptyTable": "tidak ada datas"
+      }
+    });
+    // Sembunyikan pesan "Tidak ada data" saat halaman dimuat
+    $('#no-data-message').hide();
+
+    // Ketika tombol "Tambah Jadwal" ditekan
+    $('#tambah-kolom').on('click', function () {
+      // Sembunyikan pesan "Tidak ada data"
+      $('#no-data-message').hide();
+    });
   })
 </script>
 
 <script>
-  document.getElementById("printButton").addEventListener("click", function() {
-      const doc = new jsPDF();
-      doc.autoTable({ html: "#jadwalTable" });
-  
-      // Simpan dan buka PDF dalam tab baru
-      const pdfDataUri = doc.output("datauristring");
-      const pdfWindow = window.open();
-      pdfWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+     document.getElementById('tambahjadwal').addEventListener('click', function () {
+      document.querySelector('.tambahjadwal').style.display = 'block';
+      // history.pushState({}, "", "/jadwalpraktekdokter/tambahjadwal");
   });
-  </script>
+  document.getElementById('reload-halaman').addEventListener('click', function () {
+        // Melakukan reload halaman
+        location.reload();
+    });
+</script>
+
+<script>
+  document.getElementById('tambah-kolom').addEventListener('click', function () {
+      // Mengambil referensi ke tabel pada "Box Pertama"
+      // var tabelBoxPertama = document.getElementById('tabel-box-pertama').getElementsByTagName('tbody')[0];
+      
+      var tabelBoxPertama = document.getElementById('example1').getElementsByTagName('tbody')[0];
+
+      // Membuat baris baru
+      var barisBaru = document.createElement('tr');
+      var kolomHari = document.createElement('td');
+      var kolomNomer= document.createElement('td');
+      var kolomJamMasuk = document.createElement('td');
+      var kolomJamSelesai = document.createElement('td');
+      var kolomHapusJadwal = document.createElement('td');
+      // Menambahkan inputan ke dalam kolom
+      // kolomHari.innerHTML = '<input type="text" name="hari[]" class="form-control" />';
+      
+      
+        // Tambahkan input select untuk "Hari"
+        // var kolomHari = document.createElement('td');
+        
+        var selectHari = document.createElement('select');
+        selectHari.name = 'hari[]';
+        selectHari.className = 'form-control';
+        var hariOptions = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+        for (var i = 0; i < hariOptions.length; i++) {
+            var option = document.createElement('option');
+            option.value = hariOptions[i];
+            option.text = hariOptions[i];
+            selectHari.appendChild(option);
+        }       
+
+      // kolomNomer.appendChild(rowCount);
+      kolomHari.appendChild(selectHari);
+      kolomJamMasuk.innerHTML = '<input type="time" name="jam_masuk[]" class="form-control" />';
+      kolomJamSelesai.innerHTML = '<input type="time" name="jam_selesai[]" class="form-control" />';
+      kolomHapusJadwal.innerHTML = '<button  name="jam_selesai[]" class="btn btn-danger"><i class="fa fa-trash"></i></button>';
+
+      // Menambahkan kolom-kolom ke dalam baris
+      barisBaru.appendChild(kolomHari);
+      barisBaru.appendChild(kolomJamMasuk);
+      barisBaru.appendChild(kolomJamSelesai);
+      barisBaru.appendChild(kolomHapusJadwal);
+
+      // Menambahkan baris baru ke dalam tabel
+      tabelBoxPertama.appendChild(barisBaru);
+  });
+</script>
+
+<script>
+  // Mendapatkan nilai waktu dari input
+  var inputWaktu = document.getElementById("waktu");
+
+  inputWaktu.addEventListener("change", function() {
+      var waktuTerpilih = inputWaktu.value;
+      console.log("Waktu yang dipilih: " + waktuTerpilih);
+  });
+</script>
+
+
+<script>
+      $(document).ready(function () {
+        $('#spesialisasi').change(function () {
+            var spesialisasiId = $(this).val();
+
+            // Kirim permintaan Ajax untuk mendapatkan data dokter
+            $.get('/dokter/' + spesialisasiId, function (data) {
+                var dokterSelect = $('#nama_dokter');
+                dokterSelect.empty(); // Kosongkan opsi nama dokter sebelum menambahkan yang baru
+
+                $.each(data, function (key, value) {
+                    dokterSelect.append($('<option>').text(value.nama).attr('value', value.id));
+                });
+            });
+        });
+    });
+</script>
+
+{{-- <script>
+  $(document).ready(function(){
+    var spesialisasi=$(this).val();
+
+    $.ajax({
+      type:'GET',
+      url:'/'
+    })
+  })
+</script> --}}
+
+<script>
+  $(function () {
+    $('#example1').DataTable()
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
+
 
 
 </body>

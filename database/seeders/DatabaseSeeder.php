@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Spesialisasi;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,8 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         $this->call(UserSeeder::class);
-
         // $this->call(KotaSeeder::class);
+        $this->call(SpesialisasiSeeder::class);
 
     }
 }
