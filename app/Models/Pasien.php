@@ -14,7 +14,7 @@ class Pasien extends Model
         'name',
         'umur',
         'golongan_darah',
-        'no_kk',
+        'nik',
         'tgl_lahir',
         'pekerjaan',
         'status_pernikahan',

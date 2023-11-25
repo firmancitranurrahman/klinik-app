@@ -19,7 +19,7 @@
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header">
-                <h3 class="box-title">Hover Data Table</h3>
+                <h3 class="box-title">List Data Pasien</h3>
               </div>
               <!-- /.box-header -->
               <div class="box-body">
@@ -27,7 +27,6 @@
                   <thead>
                   <tr>
                     <th>No</th>
-
                     <th>CSS grade</th>
                     <th>CSS grade</th>
                     <th>Rendering engine</th>

@@ -213,7 +213,7 @@
 
         <li><a href="{{ 'jadwalpraktekdokter' }}"><i class="fa fa-calendar-times-o"></i><span>Atur Jadwal Praktek</span></a></li>
         <li class="header">LABELS</li>
-        <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+        <li><a href="{{ 'registerpelayanan' }}"><i class="fa fa-microscope"></i> <span>Pelayanan</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
       </ul>
@@ -606,6 +606,40 @@
     })
   })
 </script>
+
+<script>
+  $(document).ready(function () {
+      $("#checknikbutton").click(function () {
+          var nikValue = $("#nik").val();
+
+          if (nikValue.trim() !== "") {
+              $.ajax({
+                  type: "POST",
+                  url: "/ceknik",
+                  data: { _token: "{{ csrf_token() }}", nik: nikValue },
+                  dataType: "json",
+                  success: function (response) {
+                      if (response.status === 'available') {
+                          // Tampilkan hasil jika NIK tersedia
+                          $("#result").show();
+                         
+                      } else {
+                          // Tampilkan pesan flash jika NIK tidak tersedia
+                          $("#result").hide();
+                          alert("NIK tidak tersedia di database.");
+                      }
+                  },
+                  error: function () {
+                      alert("Terjadi kesalahan saat memproses permintaan.");
+                  }
+              });
+          } else {
+              alert("Silakan isi NIK terlebih dahulu.");
+          }
+      });
+  });
+</script>
+
 
 
 

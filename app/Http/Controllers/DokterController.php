@@ -51,10 +51,10 @@ class DokterController extends Controller
         return view('dokter.jadwalpraktekdokter',['spesialisasi'=>$spesialisasi,'dokter'=>$dokter]);
     }
 
-    public function cekombak($spesialisasi){
-        $dokter= Dokter::where('spesialisasi=id','$spesialisasi')->get();
-        response()->json($dokter);
+    public function registerpelayanan(Request $request){
+        return view('pasien.registerpelayanan');
     }
 
+   
 
 }

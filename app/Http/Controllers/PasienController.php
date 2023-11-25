@@ -41,10 +41,36 @@ class PasienController extends Controller
             'status_pernikahan'=>$request->status_pernikahan,
             'asuransi'=>$request->asuransi,
             'email'=>$request->email,
-
+            
         ]);
         return back();
     }
+    
+    public function registerpelayanan(){
+      return view('pasien.registerpelayanan');
+    }  
+    
+    public function ceknik(Request $request){
+        $nik=$request->input('nik');
+
+        $pasien = Pasien::where('nik', $nik)->first();
+        if ($pasien) {
+            return response()->json([
+                'status' => 'available',
+                'nama' => $pasien->name,
+                'alamat' => $pasien->alamat,
+            ]);
+        } else {
+            return response()->json(['status' => 'unavailable']);
+        }
+
+
+    }
+
+
+
+   
+
 
 
     

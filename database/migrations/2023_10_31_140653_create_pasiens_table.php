@@ -18,7 +18,7 @@ class CreatePasiensTable extends Migration
             $table->string('name');
             $table->string('umur');
             $table->string('golongan_darah');
-            $table->string('no_kk');
+            $table->string('nik');
             $table->string('tgl_lahir');
             $table->string('pekerjaan');
             $table->string('status_pernikahan');

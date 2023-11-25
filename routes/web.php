@@ -52,9 +52,16 @@ Route::get('/tambahdatapasien',[PasienController::class,'tambahdatapasien'])->na
 
 Route::post('/storepasien',[PasienController::class,'storepasien'])->name('storepasien');
 
-
+Route::get('/registerpelayanan', [PasienController::class,'registerpelayanan'])->name('registerpelayanan');
 
 Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak');
+
+
+Route::post('/ceknik', [PasienController::class, 'ceknik'])->name('ceknik');
+
+
+
+// Route::post('/ceknik', [PasienController::class,'ceknik'])->name('ceknik');
 
 Route::get('/logout',function(){
     auth::logout();

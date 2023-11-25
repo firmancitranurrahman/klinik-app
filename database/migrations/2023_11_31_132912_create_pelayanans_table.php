@@ -16,7 +16,9 @@ class CreatePelayanansTable extends Migration
         Schema::create('pelayanans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pelayanan');
-            $table->string('harga');
+            $table->string('harga')->nullable();
+            $table->unsignedBigInteger('pasien')->nullable();
+            $table->foreign('pasien')->references('id')->on('pasiens')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

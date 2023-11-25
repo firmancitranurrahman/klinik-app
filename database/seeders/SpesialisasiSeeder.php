@@ -17,7 +17,13 @@ class SpesialisasiSeeder extends Seeder
         //
         Spesialisasi::create([
             'nama_spesialisasi' => 'Spesialis Jantung',
-            
+        ]);
+        
+        Spesialisasi::create([
+            'nama_spesialisasi' => 'Spesialis Jantung',
+        ]);
+        Spesialisasi::create([
+            'nama_spesialisasi' => 'Spesialis Jantung',
         ]);
     }
 }
