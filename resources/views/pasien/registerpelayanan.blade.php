@@ -20,31 +20,75 @@
                         <h3 class="box-title">Register Pelayanan</h3>
                     </div>
                     <div class="box-body">
-                            <div class="container">
-                                <div class="row">
-                                    <form id="/ceknikform">
-                                        <div class="col-md-4">
+                        <div class="container">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" name="nik" id="nik" placeholder="masukan nik..">
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary "id="cek-nik">Cek Nik</button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <form action="{{ route('prosespelayanan') }}" method="post">
+                                    @csrf
+                                    <div id="result" style="display:none ;">
+                                        <div class="col-md-5" hidden>
                                             <div class="form-group">
-                                                <input type="text" id="nik"  name="nik" placeholder="Masukkan Nik.." class="form-control">
+                                                <input type="text" id="id" name="pasien">
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-md btn-primary" id="checknikbutton"><i class="fa fa-search"></i></button>
+                                        {{-- <div class="col-md-5" hidden>
+                                            <div class="form-group">
+                                                <input type="text" id="id" name="status">
+                                            </div>
+                                        </div> --}}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="nama">No Register:</label>
+                                                <input class="form-control" type="text" value="{{ $noRegister }}" name="no_registrasi" readonly>
+                                            </div>
                                         </div>
-                                    </form>
-    
-
-                                        <div id="result" style="display: none;">
-                                            <label for="nama">Nama:</label>
-                                            <input type="text" id="nama" name="nama">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="nama">Nama:</label>
+                                                <input class="form-control" type="text" id="nama" name="nama">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="alamat">Alamat:</label>
+                                                <input class="form-control" type="text" id="alamat" name="alamat">
+                                            </div>   
+                                        </div>    
                                         
-                                            <label for="alamat">Alamat:</label>
-                                            <input type="text" id="alamat" name="alamat">
-                                        </div>
 
-                                </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="pelayanan">Jenis Pelayanan</label>
+                                                    <select class="form-control"name="pelayanan" id="pelayanan" multiple>
+                                                        @foreach ($pelayanan as $pel)
+                                                            <option value="{{ $pel->id }}">{{ $pel->nama_pelayanan }}</option>
+                                                        @endforeach
+                                                    </select>
+                                            </div>   
+                                        </div>
+                                        <div class="col-md-5">
+                                        <button type="submit">Save</button>
+                                        </div>    
+                                    </div>
+                                </form>
+                                
                             </div>
+                           
+
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

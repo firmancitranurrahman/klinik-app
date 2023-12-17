@@ -17,8 +17,6 @@ class CreatePelayanansTable extends Migration
             $table->id();
             $table->string('nama_pelayanan');
             $table->string('harga')->nullable();
-            $table->unsignedBigInteger('pasien')->nullable();
-            $table->foreign('pasien')->references('id')->on('pasiens')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

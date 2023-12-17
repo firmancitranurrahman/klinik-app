@@ -50,19 +50,19 @@
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="nama">No Kartu Keluarga</label>
-                                        <input type="text" class="form-control"id="nama" name="no_kk">
+                                        <input type="text" class="form-control" name="nik">
                                     </div>
                                </div>
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="nama">Tanggal Lahir</label>
-                                        <input type="date" class="form-control"id="nama" name="tgl_lahir">
+                                        <input type="date" class="form-control" name="tgl_lahir">
                                     </div>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="nama">Pekerjaan</label>
-                                        <input type="text" class="form-control"id="nama" name="pekerjaan">
+                                        <input type="text" class="form-control" name="pekerjaan">
                                     </div>
                                 </div>
                                 <div class="col-md-7">

@@ -209,11 +209,22 @@
             <li><a href="{{ 'tambahdatapasien' }}"><i class="fa fa-circle-o"></i> Tambah Data Pasien</a></li>
           </ul>
         </li>
-        <li class="header">JADWAL PRAKTEK DOKTER</li>
+        <li class="header">Layanan</li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-wheelchair"></i><span>Data Pelayanan</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ 'listdatapelayanan' }}"><i class="fa fa-circle-o"></i> List Data Pelyanan</a></li>
+            <li><a href="{{ 'registerpelayanan' }}"><i class="fa fa-circle-o"></i> <span>Register Pelayanan</span></a></li>
+          </ul>
+        </li>
 
         <li><a href="{{ 'jadwalpraktekdokter' }}"><i class="fa fa-calendar-times-o"></i><span>Atur Jadwal Praktek</span></a></li>
         <li class="header">LABELS</li>
-        <li><a href="{{ 'registerpelayanan' }}"><i class="fa fa-microscope"></i> <span>Pelayanan</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
       </ul>
@@ -608,37 +619,67 @@
 </script>
 
 <script>
-  $(document).ready(function () {
-      $("#checknikbutton").click(function () {
-          var nikValue = $("#nik").val();
-
-          if (nikValue.trim() !== "") {
-              $.ajax({
-                  type: "POST",
-                  url: "/ceknik",
-                  data: { _token: "{{ csrf_token() }}", nik: nikValue },
-                  dataType: "json",
-                  success: function (response) {
-                      if (response.status === 'available') {
-                          // Tampilkan hasil jika NIK tersedia
-                          $("#result").show();
-                         
-                      } else {
-                          // Tampilkan pesan flash jika NIK tidak tersedia
-                          $("#result").hide();
-                          alert("NIK tidak tersedia di database.");
-                      }
-                  },
-                  error: function () {
-                      alert("Terjadi kesalahan saat memproses permintaan.");
-                  }
-              });
-          } else {
-              alert("Silakan isi NIK terlebih dahulu.");
-          }
-      });
+  $document.ready(function(){
+    $('tes').click(function(){
+      $('#result').show();
+    })
   });
 </script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#cek-nik').click(function () {
+            var nik = $('#nik').val();
+            if (nik.trim() === '') {
+              alert('Nik tidak di isi');
+              return
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("ceknik") }}',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'nik': nik
+                },
+                success: function (data) {
+                    if (data.status) {
+                      $('#id').val(data.id).prop('readonly', true);
+                      $('#nama').val(data.nama).prop('readonly', true);
+                      $('#alamat').val(data.alamat).prop('readonly', true);
+                      var noRegister = generateNoRegister();
+                      $('#noRegister').val(noRegister).prop('readonly', true);
+                      $('#result').show();
+                    } else {
+                        alert('NIK tidak valid harap lakukan pendaftaran pasien!');
+                        
+                        location.reload();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+        function generateNoRegister() {
+            // Mendapatkan tanggal saat ini
+            var currentDate = new Date();
+            var year = currentDate.getFullYear();
+            var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+            var day = ('0' + currentDate.getDate()).slice(-2);
+
+            // Menghasilkan No Register dengan skema year month day
+            var noRegister = year + month + day;
+
+            return noRegister;
+        }
+      
+    });
+</script>
+
+
+
 
 
 

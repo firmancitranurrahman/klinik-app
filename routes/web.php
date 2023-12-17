@@ -58,6 +58,10 @@ Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak
 
 
 Route::post('/ceknik', [PasienController::class, 'ceknik'])->name('ceknik');
+Route::post('/ceknik2', [PasienController::class, 'ceknik2'])->name('ceknik2');
+
+Route::post('/prosespelayanan', [PasienController::class, 'prosespelayanan'])->name('prosespelayanan');
+Route::get('/listdatapelayanan', [PasienController::class,'listdatapelayanan'])->name('listdatapelayanan');
 
 
 
