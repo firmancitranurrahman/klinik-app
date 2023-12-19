@@ -70,7 +70,7 @@ class PasienController extends Controller
     // Jika sudah ada nomor registrasi sebelumnya
     if ($lastRegister) {
         // Mendapatkan nomor registrasi terakhir yang digenerate
-        $lastRegisterNumber = substr($lastRegister->no_register, 8);
+        $lastRegisterNumber = substr($lastRegister->no_registrasi, 8);
 
         // Mengecek apakah tahun, bulan, dan hari sama dengan tanggal saat ini
         if ($currentDate->isSameDay($lastRegister->created_at)) {

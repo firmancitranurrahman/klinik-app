@@ -70,11 +70,11 @@
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label for="pelayanan">Jenis Pelayanan</label>
-                                                    <select class="form-control"name="pelayanan" id="pelayanan" multiple>
+                                                    <select class="form-control"name="pelayanan" id="pelayanan">
                                                         @foreach ($pelayanan as $pel)
                                                             <option value="{{ $pel->id }}">{{ $pel->nama_pelayanan }}</option>
                                                         @endforeach
-                                                    </select>
+                                                    </select>                                                   
                                             </div>   
                                         </div>
                                         <div class="col-md-5">
@@ -89,6 +89,22 @@
                         </div>
                     </div>
                     
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box box-danger">
+                    <div class="box-header">
+                        <h3 class="box-title">Register Pelayanan</h3>
+                    </div>
+                    <div class="box-body">
+                        <table>
+                            <thead>
+                                <th>no</th>
+                                <th>no</th>
+                                <th>no</th>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
