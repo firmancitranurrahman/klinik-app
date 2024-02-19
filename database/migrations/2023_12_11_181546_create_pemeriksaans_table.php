@@ -17,8 +17,14 @@ class CreatePemeriksaansTable extends Migration
             $table->id();
             $table->string('no_registrasi')->nullable();
             $table->string('tgl_pemeriksaan')->nullable();
-            $table->string('status')->default('menunggu');
-
+            $table->string('status')->default('Dalam Antrian');
+            $table->string('tinggi_badan')->nullable();
+            $table->string('tekanan_darah')->nullable();
+            $table->string('suhu')->nullable();
+            $table->string('keluhan')->nullable();
+            $table->string('berat_badan')->nullable();
+            $table->unsignedBigInteger('dokter')->nullable();
+            $table->foreign('dokter')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('pelayanan')->nullable();
             $table->foreign('pelayanan')->references('id')->on('pelayanans')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('pasien')->nullable();
