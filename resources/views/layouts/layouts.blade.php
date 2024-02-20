@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>AdminLTE 2 | Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
@@ -199,13 +200,25 @@
         </li>
         <li class="treeview">
           <a href="#">
+            <i class="fa fa-tablet"></i> <span>Data Obat</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="{{ 'listdataobat' }}"><i class="fa fa-circle-o"></i> List Data Obat</a></li>
+            <li><a href="{{ 'tambahobat' }}"><i class="fa fa-circle-o"></i> Tambah Data Obat</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#">
             <i class="fa fa-wheelchair"></i><span>Data Pasien</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> List Data Pasien</a></li>
+            <li><a href="{{ 'listdatapasien' }}"><i class="fa fa-circle-o"></i> List Data Pasien</a></li>
             <li><a href="{{ 'tambahdatapasien' }}"><i class="fa fa-circle-o"></i> Tambah Data Pasien</a></li>
           </ul>
         </li>
@@ -224,8 +237,8 @@
         </li>
 
         <li><a href="{{ 'jadwalpraktekdokter' }}"><i class="fa fa-calendar-times-o"></i><span>Atur Jadwal Praktek</span></a></li>
-        <li class="header">LABELS</li>
-        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+        <li class="header">Medis</li>
+        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Rekam Medis</span></a></li>
         <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
       </ul>
     </section>
@@ -632,8 +645,8 @@
         $('#cek-nik').click(function () {
             var nik = $('#nik').val();
             if (nik.trim() === '') {
-              alert('Nik tidak di isi');
-              return
+              $('#error-message').text('Nik Tidak Di Isi , Silahkan Di isi')
+              .fadeIn(1000) // Menampilkan dengan efek fade selama 1 detik
             }
 
             $.ajax({
@@ -651,14 +664,22 @@
                       var noRegister = generateNoRegister();
                       $('#noRegister').val(noRegister).prop('readonly', true);
                       $('#result').show();
+                      $('#tabel-pelayanan').show();
                     } else {
-                        alert('NIK tidak valid harap lakukan pendaftaran pasien!');
-                        
-                        location.reload();
+                        // alert('NIK tidak valid harap lakukan pendaftaran pasien!');
+                        $('#error-message').text('NIK tidak valid, harap lakukan pendaftaran pasien!')
+                        .fadeIn(1000) // Menampilkan dengan efek fade selama 1 detik
+                        .delay(2000)   // Menahan selama 2 detik
+                        .fadeOut(1000)
+                        // setTimeout(function(){
+                        //     $('#error-message').hide();
+                        // }, 3000);
                     }
                 },
                 error: function (error) {
                     console.log(error);
+                    $('#response-message').html('<div class="alert alert-success">Data berhasil disimpan.</div>');
+
                 }
             });
         });
@@ -678,10 +699,87 @@
     });
 </script>
 
+<!-- Pastikan Anda sudah menyertakan jQuery sebelum script ini -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+      $("#btn-simpan").click(function() {
+          // Ambil data dari input form
+          var noRegistrasi = $("input[name='no_registrasi']").val();
+          var nama = $("input[name='nama']").val();
+          var alamat = $("input[name='alamat']").val();
+          var pasien = $("input[name='pasien']").val();
+          var dokter = $('#dokter').val();
+          // Ambil data pelayanan yang dipilih
+          var keluhan = [];
+
+          $('input[name="keluhan[]"]:checked').each(function() {
+                    keluhan.push($(this).val());
+                });
+        
+              // Kirim data menggunakan Ajax
+              $.ajax({
+                  url: "{{ route('prosespemeriksaan') }}", // Gantilah dengan nama route yang sesuai di Laravel
+                  type: "POST",
+                 
+                  data: {
+                      _token: '{{ csrf_token() }}', // Pastikan untuk menyertakan _token dalam setiap permintaan POST di Laravel
+                      pasien: pasien,
+                      no_registrasi: noRegistrasi,
+                      nama: nama,
+                      alamat: alamat,
+                      dokter:dokter,
+                      keluhan: keluhan
+                      // tambahkan data lainnya sesuai kebutuhan
+                  },
+                  success: function(response) {
+                      // Tampilkan pesan sukses kepada pengguna
+                      $("#pesan").html('<div class="alert alert-success">'+response.message+'</div>');
+                      // window.location.href = 'listdatapasien';
+                  },
+                  error: function(error) {
+                      // Tampilkan pesan error kepada pengguna
+                      $("#pesan").html('<div class="alert alert-danger">Terjadi kesalahan, data gagal disimpan!</div>');
+                  }
+              });
+      });
+
+      // $('input[type="checkbox"]').click(function(){
+      //   // Periksa apakah checkbox tersebut sudah dicek (checked)
+      //   if($(this).prop("checked") == true){
+      //     // Ganti checkbox dengan tanda centang (checkmark)
+      //     $(this).replaceWith('<span>&#10003;</span>');
+      //   }
+      //   else if($(this).prop("checked") == false){
+      //     // Ganti tanda centang dengan checkbox
+      //     $(this).replaceWith('<input type="checkbox" value="' + $(this).val() + '">');
+      //   }
+      // });
+  });
+</script>
 
 
+<script>
+    function hitungUmur() {
+        // Ambil nilai tanggal lahir
+        var tanggalLahir = document.getElementById('tgl_lahir').value;
 
+        // Hitung umur berdasarkan tanggal lahir
+        var today = new Date();
+        var birthDate = new Date(tanggalLahir);
+        var age = today.getFullYear() - birthDate.getFullYear();
 
+        // Periksa apakah ulang tahun sudah lewat atau belum
+        var monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        // Tampilkan umur pada input umur
+        document.getElementById('umur').value = age;
+    }
+</script>
 
 </body>
 </html>

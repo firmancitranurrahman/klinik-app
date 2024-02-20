@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\KlinikController;
+use App\Http\Controllers\ObatController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +53,7 @@ Route::get('/tambahdatapasien',[PasienController::class,'tambahdatapasien'])->na
 
 Route::post('/storepasien',[PasienController::class,'storepasien'])->name('storepasien');
 
+
 Route::get('/registerpelayanan', [PasienController::class,'registerpelayanan'])->name('registerpelayanan');
 
 Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak');
@@ -60,9 +62,22 @@ Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak
 Route::post('/ceknik', [PasienController::class, 'ceknik'])->name('ceknik');
 Route::post('/ceknik2', [PasienController::class, 'ceknik2'])->name('ceknik2');
 
-Route::post('/prosespelayanan', [PasienController::class, 'prosespelayanan'])->name('prosespelayanan');
+Route::get('/formpemeriksaan/{id}/', [PasienController::class,'formpemeriksaan'])->name('formpemeriksaan');
+Route::put('/updatepemeriksaan/{id}', [PasienController::class,'updatepemeriksaan'])->name('updatepemeriksaan');
+
+
+Route::post('/prosespemeriksaan', [PasienController::class, 'prosespemeriksaan'])->name('prosespemeriksaan');
 Route::get('/listdatapelayanan', [PasienController::class,'listdatapelayanan'])->name('listdatapelayanan');
 
+
+Route::get('/listdataobat', [ObatController::class,'listdataobat'])->name('listdataobat');
+Route::get('/tambahobat', [ObatController::class,'tambahobat'])->name('tambahobat');
+
+Route::post('/storeobat', [ObatController::class,'storeobat'])->name('storeobat');
+
+
+Route::post('/cetakdata', [PasienController::class, 'cetakdata'])->name('cetakdata');
+Route::post('/cetak-pdf', 'PasienController@cetakPDF');
 
 
 // Route::post('/ceknik', [PasienController::class,'ceknik'])->name('ceknik');

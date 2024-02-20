@@ -22,4 +22,5 @@ class Pasien extends Model
         'asuransi',
         'email'
     ];
+
 }

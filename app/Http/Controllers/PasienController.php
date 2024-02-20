@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Pasien;
 use App\Models\Pelayanan;
 use App\Models\Pemeriksaan;
+use App\Models\User;
+use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\PDF;
+use PhpOffice\PhpWord\Writer\Word2007;
+use PhpOffice\PhpWord\Writer\Word2013;
+
 
 class PasienController extends Controller
 {
@@ -20,12 +27,21 @@ class PasienController extends Controller
     }
 
     public function listdatapelayanan(){
-        $query=DB::table('pemeriksaans as pem')
-        ->join('pasiens as pas', 'pem.pasien', '=', 'pas.id')
-        // ->join('orders', 'users.id', '=', 'orders.user_id')
-        ->select('pem.*', 'pas.name')->get();
+        // $query=DB::table('pemeriksaans as pem')
+        // ->Leftjoin('pasiens as pas', 'pem.pasien', '=', 'pas.id')
+        // // ->join('pelayanans as pel', 'pem.pelayanan', '=', 'pel.id')
+        // ->select('pem.*', 'pas.name')->get();
 
-        return view('pasien.listdatapelayanan',['query'=>$query]);
+        // $query=Pemeriksaan::with('pelayanans')
+            $query=Pemeriksaan::with(['pelayanans'])
+            ->join('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+            ->orderBy('no_registrasi', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+        ->get();
+        $pelayanan= Pelayanan::all();
+        
+        // return dd($query);
+        return view('pasien.listdatapelayanan',['query'=>$query,'pelayanan'=>$pelayanan]);
+        
     }
     public function tambahdatapasien(){
         return view('pasien.tambahpasien');
@@ -59,6 +75,9 @@ class PasienController extends Controller
     
     public function registerpelayanan(){
         $pelayanan= Pelayanan::all();
+        $dokter= User::whereHas('roles',function($query){
+            $query->where('name','dokter');
+        })->get();
        
         $currentDate = now();
          // Membuat format nomor registrasi yang diinginkan
@@ -90,7 +109,8 @@ class PasienController extends Controller
 
 
         
-      return view('pasien.registerpelayanan',['pelayanan'=>$pelayanan,'noRegister'=>$noRegister]);
+      return view('pasien.registerpelayanan',['pelayanan'=>$pelayanan,'noRegister'=>$noRegister,'dokter'=>$dokter]);
+        // return dd($dokter);
     }  
     
     public function ceknik(Request $request){
@@ -112,25 +132,109 @@ class PasienController extends Controller
         }  
     }
 
-    public function prosespelayanan( Request $request){
+    public function prosespemeriksaan( Request $request){
         $tgl_pemeriksaan= now();
-        $pemeriksaan = Pemeriksaan::create([
-            'no_registrasi'=>$request->no_registrasi,
-            'tgl_pemeriksaan'=>$tgl_pemeriksaan->toDateString(),
-            'spesialisasi'=>$request->spesialisasi,
-            'pasien'=>$request->pasien,
-            // 'status'=>$request->pemeriksaan
+        $request->validate([
+            'no_registrasi' => 'required',
+            // Pastikan pelayanan dengan ID yang dipilih ada
         ]);
+        
+        // $registrasi->save();
+        try{
+            $registrasi= new Pemeriksaan();
+            $registrasi->tgl_pemeriksaan= now();
+            $registrasi->no_registrasi= $request->input('no_registrasi');
+            $registrasi->pasien= $request->input('pasien');
+            $registrasi->keluhan = json_encode($request->keluhan); // Simpan keluhan dalam bentuk JSON      
+            $registrasi->dokter= $request->input('dokter');
+            $registrasi->save(); // Simpan pemeriksaan untuk mendapatkan ID
+          
+            // return redirect()->route('listdatapelayanan')->with('success', 'Pelayanan berhasil disimpan pada pemeriksaan.');
+            return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
+        }catch(\Exception $e){
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    
+    }
 
-        return dd($pemeriksaan);
+    public function formpemeriksaan($id){
+        $query = Pemeriksaan::findOrFail($id);
+
+
+        return view('pasien.formpemeriksaan',['query'=>$query]);
+    }
+
+    public function updatepemeriksaan(Request $request,$id){
+         try{
+         $query = Pemeriksaan::find($id);
+         $query->berat_badan= $request->berat_badan;
+         $query->suhu= $request->suhu;
+         $query->pelayanan= $request->pelayanan;
+         $query->status= "Sudah Diperiksa";
+         $query->save();
+         return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
+        }catch(\Exception $e){
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+
+
+    public function cetakdata(Request $request){
+          // Mendapatkan data pasien dari permintaan AJAX
+        $pasienIds = $request->input('pasien_ids');
+
+        // Mengambil data pasien berdasarkan ID yang dipilih
+        $dataPasien = Pasien::whereIn('id', $pasienIds)->get();
+
+
+         // Buat dokumen DOCX menggunakan PhpWord
+         $phpWord = new Phpword();
+         $section = $phpWord->addSection();
+         $section->addText('Data Pasien yang Dipilih:');
+        
+         foreach ($dataPasien as $pasien) {
+            $section->addText("Nama: {$pasien['nama']}");
+            $section->addText("No. KK: {$pasien['no_kk']}");
+            $section->addText("Pekerjaan: {$pasien['pekerjaan']}");
+            $section->addText("Status Pernikahan: {$pasien['status_pernikahan']}");
+            $section->addText("Asuransi: {$pasien['asuransi']}");
+            $section->addText("Email: {$pasien['email']}");
+            $section->addText("------------------------");
+        }
+
+        // Simpan dokumen ke file dengan format Word 2013
+        $filename = storage_path('app/public/dokumen_pasien.docx');
+        $objWriter = new Word2007($phpWord);
+        $objWriter->save($filename);
+        // Respon ke klien
+        return response()->json(['status' => 'success', 'file_path' => asset('storage/dokumen_pasien.docx')]);
+    }
+
+    public function cetakPDF(Request $request)
+    {
+        // Ambil ID pasien yang dicentang dari request
+        $selectedIds = $request->input('ids');
+
+        // Ambil data pasien berdasarkan ID yang dicentang
+        $pasien = Pasien::whereIn('id', $selectedIds)->get();
+
+        // Buat dokumen PDF menggunakan DomPDF
+        $pdf = PDF::loadView('nama-view-pdf', compact('pasien'));
+
+        // Contoh mengunduh dokumen PDF
+        return $pdf->download('dokumen.pdf');
+    }
+
+ 
+
+  
+
     }
 
 
 
 
-   
-
-
 
     
-}
+

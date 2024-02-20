@@ -32,8 +32,14 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="form-group">
+                                        <label for="nama">Tanggal Lahir</label>
+                                        <input type="date" class="form-control" id="tgl_lahir"name="tgl_lahir" onchange="hitungUmur()">
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
                                         <label for="nama">Umur</label>
-                                        <input type="text" class="form-control" name="umur">
+                                        <input  id="umur" type="text" class="form-control" name="umur" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-7">
@@ -53,12 +59,7 @@
                                         <input type="text" class="form-control" name="nik">
                                     </div>
                                </div>
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <label for="nama">Tanggal Lahir</label>
-                                        <input type="date" class="form-control" name="tgl_lahir">
-                                    </div>
-                                </div>
+                               
                                 <div class="col-md-7">
                                     <div class="form-group">
                                         <label for="nama">Pekerjaan</label>

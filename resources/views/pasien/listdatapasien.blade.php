@@ -27,12 +27,14 @@
                   <thead>
                   <tr>
                     <th>No</th>
-                    <th>CSS grade</th>
-                    <th>CSS grade</th>
-                    <th>Rendering engine</th>
-                    <th>Browser</th>
-                    <th>Platform(s)</th>
-                    <th>Engine version</th>
+                    <th>Nama</th>
+                    <th>KTP</th>
+                    <th>Pekerjaan</th>
+                    <th>Status Pernikahan</th>
+                    <th>Asuransi</th>
+                    <th>Email</th>
+                    <th>Pilih</th>
+
                   </tr>
                   </thead>
                   <tbody>
@@ -46,30 +48,18 @@
                         <td>{{ $pas->status_pernikahan }}</td>
                         <td>{{ $pas->asuransi }}</td>
                         <td>{{ $pas->email }}</td>
-                        <td><input type="checkbox"></td>
+                        {{-- <td> <input type="checkbox" aria-placeholder="cetak"> </td> --}}
+                        <td> <input type="checkbox" name="pasien_id[]" value="{{ $pas->id }}" data-pasien-id="{{ $pas->id }}" aria-placeholder="cetak"> </td>
+
                       </tr>
                       <?php $nomer++?>
                     @endforeach
                   </tbody>
                 </table>
+                
                 <div class="col-md-2">
-                    <div class="form-group">
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                            cetak tunggal
-                          </label>
-                        </div>
-                        <div class="radio">
-                          <label>
-                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                            cetak semua
-                          </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-lg btn-success"><i class="fa fa-print"></i></button>
+                    <button  id="btnCetak" disabled class="btn btn-lg btn-success"><i class="fa fa-print"></i></button>
+                    {{-- <button id="btnCetak" disabled class="btn btn-lg btn-success" onclick="cetakDokumen()"><i class="fa fa-print"></i></button> --}}
                 </div>
                 
               </div>
