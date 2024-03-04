@@ -27,20 +27,31 @@ class PasienController extends Controller
     }
 
     public function listdatapelayanan(){
-        // $query=DB::table('pemeriksaans as pem')
-        // ->Leftjoin('pasiens as pas', 'pem.pasien', '=', 'pas.id')
-        // // ->join('pelayanans as pel', 'pem.pelayanan', '=', 'pel.id')
-        // ->select('pem.*', 'pas.name')->get();
+       
 
-        // $query=Pemeriksaan::with('pelayanans')
             $query=Pemeriksaan::with(['pelayanans'])
-            ->join('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+            ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
+            ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+            ->where('status', 'Dalam Antrian')
+            // ->select('pemeriksaans.*', 'pelayanans.nama_pelayanan as nama_pelayanan,pasiens.name')
             ->orderBy('no_registrasi', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
-        ->get();
+            ->get();
+
+            $query2=Pemeriksaan::with(['pelayanans'])
+            ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
+            ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+            ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
+            ->select('pemeriksaans.id AS id_pemeriksaan','pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien') // Sertakan kolom 'name' dari tabel 'pelayanans'
+            ->where('status', 'Sudah Diperiksa')
+
+            ->orderBy('no_registrasi', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+            ->get();
+
+        
         $pelayanan= Pelayanan::all();
         
         // return dd($query);
-        return view('pasien.listdatapelayanan',['query'=>$query,'pelayanan'=>$pelayanan]);
+        return view('pasien.listdatapelayanan',['query'=>$query,'query2'=>$query2,'pelayanan'=>$pelayanan]);
         
     }
     public function tambahdatapasien(){
@@ -79,34 +90,54 @@ class PasienController extends Controller
             $query->where('name','dokter');
         })->get();
        
-        $currentDate = now();
-         // Membuat format nomor registrasi yang diinginkan
-    $noRegisterFormat = $currentDate->format('Ymd') . '%04d';
+    //     $currentDate = now();
+    //      // Membuat format nomor registrasi yang diinginkan
+    // $noRegisterFormat = $currentDate->format('Ymd') . '%04d';
 
-    // Mendapatkan nomor registrasi terakhir yang digenerate
-    $lastRegister = Pemeriksaan::latest('no_registrasi')->first();
+    // // Mendapatkan nomor registrasi terakhir yang digenerate
+    // $lastRegister = Pemeriksaan::latest('no_registrasi')->first();
 
-    // Jika sudah ada nomor registrasi sebelumnya
-    if ($lastRegister) {
-        // Mendapatkan nomor registrasi terakhir yang digenerate
-        $lastRegisterNumber = substr($lastRegister->no_registrasi, 8);
+    // // Jika sudah ada nomor registrasi sebelumnya
+    // if ($lastRegister) {
+    //     // Mendapatkan nomor registrasi terakhir yang digenerate
+    //     $lastRegisterNumber = substr($lastRegister->no_registrasi, 8);
 
-        // Mengecek apakah tahun, bulan, dan hari sama dengan tanggal saat ini
-        if ($currentDate->isSameDay($lastRegister->created_at)) {
-            // Increment nomor registrasi
-            $nextRegisterNumber = intval($lastRegisterNumber) + 1;
-        } else {
-            // Jika tanggal berbeda, reset nomor registrasi
-            $nextRegisterNumber = 1;
-        }
-    } else {
-        // Jika belum ada nomor registrasi sebelumnya
-        $nextRegisterNumber = 1;
-    }
+    //     // Mengecek apakah tahun, bulan, dan hari sama dengan tanggal saat ini
+    //     if ($currentDate->isSameDay($lastRegister->created_at)) {
+    //         // Increment nomor registrasi
+    //         $nextRegisterNumber = intval($lastRegisterNumber) + 1;
+    //     } else {
+    //         // Jika tanggal berbeda, reset nomor registrasi
+    //         $nextRegisterNumber = 1;
+    //     }
+    // } else {
+    //     // Jika belum ada nomor registrasi sebelumnya
+    //     $nextRegisterNumber = 1;
+    // }
 
-    // Membuat nomor registrasi baru dengan format yang diinginkan
-    $noRegister = sprintf($noRegisterFormat, $nextRegisterNumber);
+    // // Membuat nomor registrasi baru dengan format yang diinginkan
+    // $noRegister = sprintf($noRegisterFormat, $nextRegisterNumber);
 
+ // Mendapatkan dua digit terakhir tahun saat ini
+ $year = date('y');
+
+ // Mendapatkan nomor rekam medis terakhir yang digenerate
+ $lastRekamMedis = Pemeriksaan::latest('no_registrasi')->first();
+
+ // Jika sudah ada nomor rekam medis sebelumnya
+ if ($lastRekamMedis) {
+     // Mendapatkan nomor rekam medis terakhir yang digenerate
+     $lastRekamMedisNumber = substr($lastRekamMedis->nomor_rekam_medis, 2);
+
+     // Increment nomor rekam medis
+     $nextRekamMedisNumber = intval($lastRekamMedisNumber) + 1;
+ } else {
+     // Jika belum ada nomor rekam medis sebelumnya
+     $nextRekamMedisNumber = 1;
+ }
+
+ // Membuat nomor rekam medis baru dengan format yang diinginkan
+ $noRegister = $year . sprintf("%04d", $nextRekamMedisNumber);
 
         
       return view('pasien.registerpelayanan',['pelayanan'=>$pelayanan,'noRegister'=>$noRegister,'dokter'=>$dokter]);
@@ -165,17 +196,19 @@ class PasienController extends Controller
     }
 
     public function updatepemeriksaan(Request $request,$id){
-         try{
+        //  try{
          $query = Pemeriksaan::find($id);
          $query->berat_badan= $request->berat_badan;
          $query->suhu= $request->suhu;
          $query->pelayanan= $request->pelayanan;
          $query->status= "Sudah Diperiksa";
          $query->save();
-         return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
-        }catch(\Exception $e){
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
-        }
+
+         return dd($query);
+         //  return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
+        // }catch(\Exception $e){
+        //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        // }
     }
 
 

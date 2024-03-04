@@ -14,7 +14,7 @@
     </section><br>
     <section class="content">
         <div class="row">
-        <form method="post" action="/storepasien">
+        <form method="post" action="{{ url('/storepasien') }}">
             @csrf
           <div class="col-md-8">
               <div class="box box-danger">

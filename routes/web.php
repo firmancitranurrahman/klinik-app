@@ -73,6 +73,10 @@ Route::get('/listdatapelayanan', [PasienController::class,'listdatapelayanan'])-
 Route::get('/listdataobat', [ObatController::class,'listdataobat'])->name('listdataobat');
 Route::get('/tambahobat', [ObatController::class,'tambahobat'])->name('tambahobat');
 
+
+Route::get('/registerobat/{id_pemeriksaan}', [ObatController::class,'registerobat'])->name('registerobat');
+// Route::get('/registerobat', [ObatController::class,'registerobat'])->name('registerobat');
+
 Route::post('/storeobat', [ObatController::class,'storeobat'])->name('storeobat');
 
 

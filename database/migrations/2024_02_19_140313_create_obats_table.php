@@ -20,7 +20,9 @@ class CreateObatsTable extends Migration
             $table->string('satuan')->nullable();
             $table->integer('isi')->nullable();
             $table->integer('stok')->nullable();
-            $table->integer('harga')->nullable();
+            $table->integer('harga_jual')->nullable();
+            $table->integer('harga_beli')->nullable();
+
 
             $table->timestamps();
         });
