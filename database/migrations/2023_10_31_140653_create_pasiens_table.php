@@ -15,10 +15,11 @@ class CreatePasiensTable extends Migration
     {
         Schema::create('pasiens', function (Blueprint $table) {
             $table->id();
+            $table->string('no_rekam_medis')->nullable();
             $table->string('name');
             $table->string('umur');
             $table->string('golongan_darah');
-            $table->string('nik');
+            $table->string('nik')->nullable();
             $table->string('tgl_lahir');
             $table->string('pekerjaan');
             $table->string('status_pernikahan');

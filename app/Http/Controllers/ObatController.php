@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Obat;
+use App\Models\Pasien;
 use App\Models\Pemeriksaan;
 use Illuminate\Http\Request;
 
@@ -25,12 +26,25 @@ class ObatController extends Controller
 
     public function storeobat(Request $request){
         
-        $obat= Obat::create([
-            'satuan'=>$request->satuan,
-            'stok'=>$request->stok,
-            'harga'=>$request->harga,
+        try {
+            Obat::create([
+                'kode_obat'=>$request->kode_obat,
+                'nama_obat'=>$request->nama_obat,
+                'satuan'=>$request->satuan,
+                'stok'=>$request->stok,
+                'harga'=>$request->harga,
+    
+            ]);
+            return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
 
-        ]);
+            //code...
+        } catch (\Exception $e) {
+            //throw $th;
+
+            return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
+
+        }
+        
 
         return redirect();
     }
@@ -39,16 +53,12 @@ class ObatController extends Controller
 
     }
 
-    public function registerobat($id_pemeriksaan){
-        $query=Pemeriksaan::find($id_pemeriksaan);
-       return view('obat.registerobat',['query'=>$query]);
+    public function registerobat(){
+    //    $pasien=Pasien::find($id); 
+       return view('obat.registerobat');
 
     }
 
-    // public function registerobat(){
- 
-    //     return view('obat.registerobat');
- 
-    //  }
+  
 
 }

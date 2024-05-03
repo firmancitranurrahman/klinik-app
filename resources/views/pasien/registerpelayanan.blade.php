@@ -23,10 +23,10 @@
                             <div id="error-message" class="callout callout-danger" style="display: none;"></div>
                             <div class="form-group">
                                 <div class="col-md-4">
-                                    <input class="form-control" type="text" name="nik" id="nik" placeholder="masukan nik..">
+                                    <input class="form-control" type="text" name="no_rekam_medis" id="no_rekam_medis" placeholder="masukan nomer rekam medis">
                                 </div>
                                 <div class="col-md-2">
-                                    <button class="btn btn-primary "id="cek-nik">Cek Nik</button>
+                                    <button class="btn btn-primary "id="cek-rm">Cek Rekam Medis</button>
                                 </div>
                             </div>
                         </div>
@@ -49,12 +49,12 @@
                                         <input type="text" id="id" name="pasien">
                                     </div>
                                 </div>   
-                                <div class="col-md-4">
+                                {{-- <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="nama">No Register:</label>
+                                        <label for="nama">Nomer Rekam Medis:</label>
                                         <input class="form-control" type="text"  value="{{ $noRegister }}" name="no_registrasi" readonly>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-5">
                                     <div class="form-group">
                                         <label for="nama">Nama:</label>

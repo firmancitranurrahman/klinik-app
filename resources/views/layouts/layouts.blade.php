@@ -30,9 +30,9 @@
   <link rel="stylesheet" href="{{ asset('public/assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
   <!-- Daterange picker -->
   <link rel="stylesheet" href="{{ asset('public/assets/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">
-  <!-- bootstrap wysihtml5 - text editor -->
+  {{-- <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="{{ asset('public/assets/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('public/assets/extends.css') }}">
+  <link rel="stylesheet" href="{{ asset('public/assets/extends.css') }}"> --}}
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 
@@ -454,6 +454,8 @@
 <!-- ./wrapper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
+
+
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- jQuery 3 -->
@@ -499,13 +501,10 @@
 <!-- DataTables -->
 <script src="{{ asset('assets/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+
+
 <script>
   $(function () {
-    $('#example1')({
-      "language": {
-			           "emptyTable": "tidak ada datas"
-      }
-    });
     // Sembunyikan pesan "Tidak ada data" saat halaman dimuat
     $('#no-data-message').hide();
 
@@ -606,20 +605,11 @@
     });
 </script>
 
-{{-- <script>
-  $(document).ready(function(){
-    var spesialisasi=$(this).val();
-
-    $.ajax({
-      type:'GET',
-      url:'/'
-    })
-  })
-</script> --}}
 
 <script>
   $(function () {
     $('#example1').DataTable()
+
     $('#example2').DataTable({
       'paging'      : true,
       'lengthChange': false,
@@ -631,43 +621,34 @@
   })
 </script>
 
-<script>
-  $document.ready(function(){
-    $('tes').click(function(){
-      $('#result').show();
-    })
-  });
-</script>
 
 
 <script>
     $(document).ready(function () {
-        $('#cek-nik').click(function () {
-            var nik = $('#nik').val();
-            if (nik.trim() === '') {
-              $('#error-message').text('Nik Tidak Di Isi , Silahkan Di isi')
+        $('#cek-rm').click(function () {
+            var no_rekam_medis = $('#no_rekam_medis').val();
+            if (no_rekam_medis.trim() === '') {
+              $('#error-message').text('Rekam Medis Tidak Di Isi , Silahkan Di isi')
               .fadeIn(1000) // Menampilkan dengan efek fade selama 1 detik
             }
 
             $.ajax({
                 type: 'POST',
-                url: '{{ route("ceknik") }}',
+                url: '{{ route("cekrm") }}',
                 data: {
                     '_token': '{{ csrf_token() }}',
-                    'nik': nik
+                    'no_rekam_medis': no_rekam_medis
                 },
                 success: function (data) {
                     if (data.status) {
                       $('#id').val(data.id).prop('readonly', true);
                       $('#nama').val(data.nama).prop('readonly', true);
                       $('#alamat').val(data.alamat).prop('readonly', true);
-                      var noRegister = generateNoRegister();
-                      $('#noRegister').val(noRegister).prop('readonly', true);
                       $('#result').show();
                       $('#tabel-pelayanan').show();
                     } else {
                         // alert('NIK tidak valid harap lakukan pendaftaran pasien!');
-                        $('#error-message').text('NIK tidak valid, harap lakukan pendaftaran pasien!')
+                        $('#error-message').text('Nomer Rekam Medis tidak valid, harap lakukan pendaftaran pasien!')
                         .fadeIn(1000) // Menampilkan dengan efek fade selama 1 detik
                         .delay(2000)   // Menahan selama 2 detik
                         .fadeOut(1000)
@@ -683,20 +664,6 @@
                 }
             });
         });
-        function generateNoRegister() {
-            // Mendapatkan tanggal saat ini
-            var currentDate = new Date();
-            var year = currentDate.getFullYear().toString().substr(-2); // Mendapatkan dua digit terakhir tahun (misalnya, '24' dari tahun 2024)
-            // var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
-            // var day = ('0' + currentDate.getDate()).slice(-2);
-            var nextRegisterNumber = 1;
-             var noRegister = year + ("000" + nextRegisterNumber).slice(-4);
-
-            // Menghasilkan No Register dengan skema year month day
-            // var noRegister = year + month + day;
-
-            return noRegister;
-        }
       
     });
 </script>
@@ -708,7 +675,7 @@
   $(document).ready(function() {
       $("#btn-simpan").click(function() {
           // Ambil data dari input form
-          var noRegistrasi = $("input[name='no_registrasi']").val();
+          var no_rekam_medis = $("input[name='no_rekam_medis']").val();
           var nama = $("input[name='nama']").val();
           var alamat = $("input[name='alamat']").val();
           var pasien = $("input[name='pasien']").val();
@@ -728,7 +695,7 @@
                   data: {
                       _token: '{{ csrf_token() }}', // Pastikan untuk menyertakan _token dalam setiap permintaan POST di Laravel
                       pasien: pasien,
-                      no_registrasi: noRegistrasi,
+                      // no_rekam_medis: no_rekam_medis,
                       nama: nama,
                       alamat: alamat,
                       dokter:dokter,
@@ -772,6 +739,11 @@
         document.getElementById('umur').value = age;
     }
 </script>
+
+
+
+
+
 
 </body>
 </html>

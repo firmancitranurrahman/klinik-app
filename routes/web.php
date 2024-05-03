@@ -59,7 +59,7 @@ Route::get('/registerpelayanan', [PasienController::class,'registerpelayanan'])-
 Route::get('/dokter/{id}', [DokterController::class,'cekombak'])->name('cekombak');
 
 
-Route::post('/ceknik', [PasienController::class, 'ceknik'])->name('ceknik');
+Route::post('/cekrm', [PasienController::class, 'cekrm'])->name('cekrm');
 Route::post('/ceknik2', [PasienController::class, 'ceknik2'])->name('ceknik2');
 
 Route::get('/formpemeriksaan/{id}/', [PasienController::class,'formpemeriksaan'])->name('formpemeriksaan');
@@ -74,8 +74,8 @@ Route::get('/listdataobat', [ObatController::class,'listdataobat'])->name('listd
 Route::get('/tambahobat', [ObatController::class,'tambahobat'])->name('tambahobat');
 
 
-Route::get('/registerobat/{id_pemeriksaan}', [ObatController::class,'registerobat'])->name('registerobat');
-// Route::get('/registerobat', [ObatController::class,'registerobat'])->name('registerobat');
+// Route::get('/registerobat/{id_pemeriksaan}', [ObatController::class,'registerobat'])->name('registerobat');
+Route::get('/registerobat', [ObatController::class,'registerobat'])->name('registerobat');
 
 Route::post('/storeobat', [ObatController::class,'storeobat'])->name('storeobat');
 

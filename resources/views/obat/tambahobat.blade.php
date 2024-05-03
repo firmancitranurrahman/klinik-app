@@ -14,7 +14,7 @@
     </section>
     <section class="content">
         <div class="row">
-            <form action="{{ route('storeobat') }}" method="post">
+            <form action="{{ url('storeobat') }}" method="post">
                 @csrf
                 <div class="col-md-7">
                     <div class="box box-success">
@@ -27,7 +27,7 @@
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             <label for="nama">Kode Obat</label>
-                                            <input type="text" class="form-control" value="{{ $noRegister }}"name="kode_obat">
+                                            <input type="text" class="form-control" name="kode_obat">
                                         </div>
                                     </div>
                                     <div class="col-md-7">
@@ -39,7 +39,7 @@
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             <label for="nama">Satuan</label>
-                                            <select  class="form-control" name="golongan_darah">
+                                            <select  class="form-control" name="satuan">
                                                 <option value="Botol">Botol</option>
                                                 <option value="Tablet">Tablet</option>
                                                 <option value="Butir">Butir</option>
@@ -52,8 +52,7 @@
                                             <input type="text" class="form-control" name="harga">
                                         </div>
                                     </div>
-                                   
-                                                
+                                                                                  
                                 </div>
                                 <button class="btn btn-success"type="submit">simpan</button>
                             </div>                     

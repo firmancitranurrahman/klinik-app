@@ -32,19 +32,20 @@ class PasienController extends Controller
             $query=Pemeriksaan::with(['pelayanans'])
             ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
             ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+            ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
             ->where('status', 'Dalam Antrian')
-            // ->select('pemeriksaans.*', 'pelayanans.nama_pelayanan as nama_pelayanan,pasiens.name')
-            ->orderBy('no_registrasi', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+            ->select('pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
+            ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
             ->get();
 
             $query2=Pemeriksaan::with(['pelayanans'])
             ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
             ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
             ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
-            ->select('pemeriksaans.id AS id_pemeriksaan','pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien') // Sertakan kolom 'name' dari tabel 'pelayanans'
+            ->select('pemeriksaans.id AS id_pemeriksaan','pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
             ->where('status', 'Sudah Diperiksa')
 
-            ->orderBy('no_registrasi', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+            ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
             ->get();
 
         
@@ -55,7 +56,26 @@ class PasienController extends Controller
         
     }
     public function tambahdatapasien(){
-        return view('pasien.tambahpasien');
+        $year = date('y');
+
+        // Mendapatkan nomor rekam medis terakhir yang digenerate
+        $lastRekamMedis = Pasien::latest('no_rekam_medis')->first();
+       
+        // Jika sudah ada nomor rekam medis sebelumnya
+        if ($lastRekamMedis) {
+            // Mendapatkan nomor rekam medis terakhir yang digenerate
+            $lastRekamMedisNumber = substr($lastRekamMedis->no_rekam_medis, 2);
+       
+            // Increment nomor rekam medis
+            $nextRekamMedisNumber = intval($lastRekamMedisNumber) + 1;
+        } else {
+            // Jika belum ada nomor rekam medis sebelumnya
+            $nextRekamMedisNumber = 1;
+        }
+       
+        // Membuat nomor rekam medis baru dengan format yang diinginkan
+        $no_rekam_medis = $year . sprintf("%04d", $nextRekamMedisNumber);
+        return view('pasien.tambahpasien',['no_rekam_medis'=>$no_rekam_medis]);
     }
 
     public function storepasien(Request $request){
@@ -67,7 +87,8 @@ class PasienController extends Controller
             'pekerjaan'=>'required',
             'status_pernikahan'=>'required',
             'asuransi'=>'required',
-            'email'=>'required'
+            'email'=>'required',
+            'no_rekam_medis'=>'required'
         ]);
         $pasien=Pasien::create([
             'name'=>$request->name,
@@ -75,21 +96,22 @@ class PasienController extends Controller
             'golongan_darah'=>$request->golongan_darah,
             'nik'=>$request->nik,
             'tgl_lahir'=>$request->tgl_lahir,
+            'no_rekam_medis'=>$request->no_rekam_medis,
             'pekerjaan'=>$request->pekerjaan,
             'status_pernikahan'=>$request->status_pernikahan,
             'asuransi'=>$request->asuransi,
             'email'=>$request->email,
             
         ]);
-        return dd($pasien);
+
+        return redirect()->route('listdatapasien');
     }
     
     public function registerpelayanan(){
         $pelayanan= Pelayanan::all();
         $dokter= User::whereHas('roles',function($query){
             $query->where('name','dokter');
-        })->get();
-       
+        })->get(); 
     //     $currentDate = now();
     //      // Membuat format nomor registrasi yang diinginkan
     // $noRegisterFormat = $currentDate->format('Ymd') . '%04d';
@@ -117,37 +139,14 @@ class PasienController extends Controller
 
     // // Membuat nomor registrasi baru dengan format yang diinginkan
     // $noRegister = sprintf($noRegisterFormat, $nextRegisterNumber);
-
- // Mendapatkan dua digit terakhir tahun saat ini
- $year = date('y');
-
- // Mendapatkan nomor rekam medis terakhir yang digenerate
- $lastRekamMedis = Pemeriksaan::latest('no_registrasi')->first();
-
- // Jika sudah ada nomor rekam medis sebelumnya
- if ($lastRekamMedis) {
-     // Mendapatkan nomor rekam medis terakhir yang digenerate
-     $lastRekamMedisNumber = substr($lastRekamMedis->nomor_rekam_medis, 2);
-
-     // Increment nomor rekam medis
-     $nextRekamMedisNumber = intval($lastRekamMedisNumber) + 1;
- } else {
-     // Jika belum ada nomor rekam medis sebelumnya
-     $nextRekamMedisNumber = 1;
- }
-
- // Membuat nomor rekam medis baru dengan format yang diinginkan
- $noRegister = $year . sprintf("%04d", $nextRekamMedisNumber);
-
-        
-      return view('pasien.registerpelayanan',['pelayanan'=>$pelayanan,'noRegister'=>$noRegister,'dokter'=>$dokter]);
+      return view('pasien.registerpelayanan',['pelayanan'=>$pelayanan,'dokter'=>$dokter]);
         // return dd($dokter);
     }  
     
-    public function ceknik(Request $request){
-        $nik=$request->input('nik');
+    public function cekrm(Request $request){
+        $no_rekam_medis=$request->input('no_rekam_medis');
 
-        $pasien = Pasien::where('nik', $nik)->first();
+        $pasien = Pasien::where('no_rekam_medis', $no_rekam_medis)->first();
 
         if($pasien!== null){
             return response()->json([
@@ -166,7 +165,7 @@ class PasienController extends Controller
     public function prosespemeriksaan( Request $request){
         $tgl_pemeriksaan= now();
         $request->validate([
-            'no_registrasi' => 'required',
+            // 'no_registrasi' => 'required',
             // Pastikan pelayanan dengan ID yang dipilih ada
         ]);
         
@@ -174,7 +173,7 @@ class PasienController extends Controller
         try{
             $registrasi= new Pemeriksaan();
             $registrasi->tgl_pemeriksaan= now();
-            $registrasi->no_registrasi= $request->input('no_registrasi');
+            // $registrasi->no_rekam_medis= $request->input('no_rekam_medis');
             $registrasi->pasien= $request->input('pasien');
             $registrasi->keluhan = json_encode($request->keluhan); // Simpan keluhan dalam bentuk JSON      
             $registrasi->dokter= $request->input('dokter');
@@ -196,7 +195,7 @@ class PasienController extends Controller
     }
 
     public function updatepemeriksaan(Request $request,$id){
-        //  try{
+         try{
          $query = Pemeriksaan::find($id);
          $query->berat_badan= $request->berat_badan;
          $query->suhu= $request->suhu;
@@ -204,63 +203,16 @@ class PasienController extends Controller
          $query->status= "Sudah Diperiksa";
          $query->save();
 
-         return dd($query);
-         //  return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
-        // }catch(\Exception $e){
-        //     return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
-        // }
-    }
-
-
-
-    public function cetakdata(Request $request){
-          // Mendapatkan data pasien dari permintaan AJAX
-        $pasienIds = $request->input('pasien_ids');
-
-        // Mengambil data pasien berdasarkan ID yang dipilih
-        $dataPasien = Pasien::whereIn('id', $pasienIds)->get();
-
-
-         // Buat dokumen DOCX menggunakan PhpWord
-         $phpWord = new Phpword();
-         $section = $phpWord->addSection();
-         $section->addText('Data Pasien yang Dipilih:');
-        
-         foreach ($dataPasien as $pasien) {
-            $section->addText("Nama: {$pasien['nama']}");
-            $section->addText("No. KK: {$pasien['no_kk']}");
-            $section->addText("Pekerjaan: {$pasien['pekerjaan']}");
-            $section->addText("Status Pernikahan: {$pasien['status_pernikahan']}");
-            $section->addText("Asuransi: {$pasien['asuransi']}");
-            $section->addText("Email: {$pasien['email']}");
-            $section->addText("------------------------");
+        //  return dd($query);
+          return response()->json(['success' => true, 'message' => 'Pelayanan berhasil disimpan pada pemeriksaan.']);
+        }catch(\Exception $e){
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
-
-        // Simpan dokumen ke file dengan format Word 2013
-        $filename = storage_path('app/public/dokumen_pasien.docx');
-        $objWriter = new Word2007($phpWord);
-        $objWriter->save($filename);
-        // Respon ke klien
-        return response()->json(['status' => 'success', 'file_path' => asset('storage/dokumen_pasien.docx')]);
     }
 
-    public function cetakPDF(Request $request)
-    {
-        // Ambil ID pasien yang dicentang dari request
-        $selectedIds = $request->input('ids');
 
-        // Ambil data pasien berdasarkan ID yang dicentang
-        $pasien = Pasien::whereIn('id', $selectedIds)->get();
 
-        // Buat dokumen PDF menggunakan DomPDF
-        $pdf = PDF::loadView('nama-view-pdf', compact('pasien'));
-
-        // Contoh mengunduh dokumen PDF
-        return $pdf->download('dokumen.pdf');
-    }
-
- 
-
+    
   
 
     }

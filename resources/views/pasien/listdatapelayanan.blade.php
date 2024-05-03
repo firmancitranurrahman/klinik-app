@@ -17,8 +17,8 @@
             <div class="col-md-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Tab 1</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">Tab 2</a></li>
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Belum Diperiksa</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">Sudah Diperiksa</a></li>
                     </ul>
                     <div class="tab-content">
                           <div class="tab-pane " id="tab_1">
@@ -29,7 +29,7 @@
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                         <th>No</th>
-                                        <th>Nomer Registrasi</th>
+                                        <th>Nomer Rekam Medis</th>
                                         <th>tanggal Registrasi</th>
                                         <th>Nama</th>
                                         <th>Keluhan</th>
@@ -42,9 +42,9 @@
                                         @foreach ($query as $q)
                                         <tr>
                                             <td>{{$nomer }}</td>
-                                            <td>{{ $q->no_registrasi }}</td>
+                                            <td>{{ $q->no_rekam_medis }}</td>
                                             <td>{{ $q->tgl_pemeriksaan }}</td>
-                                            <td>{{ $q->name }}</td>
+                                            <td>{{ $q->nama_pasien }}</td>
                                             <td>
                                                 @if ($q->pelayanan==null)
                                                     Belum Ada Layanan
@@ -56,7 +56,7 @@
         
                                             <td>{{$q->status }}</td>
                                             <td>
-                                                <a href="" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
+                                                <a href="{{ url('registerobat') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
                                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#modal-default{{ $q->id }}">
                                                     <i class="fa fa-stethoscope"></i>
                                                 </button>
@@ -69,19 +69,20 @@
                                                             <h4 class="modal-title">Form Pemeriksaan Pasien</h4>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form action="/updatepemeriksaan/{{ $q->id }}" method="post">
+                                                            {{-- <form action="/updatepemeriksaan/{{ $q->id }}" method="post"> --}}
+                                                            <form action="{{ url('/updatepemeriksaan', $q->id) }}" method="post">
                                                                 @csrf 
                                                                 @method('PUT')
                                                                 <h4>1. Biodata Pasien</h4>
                                                                 <div class="row">
                                                                     <div class="form-group">
                                                                         <div class="col-md-6">
-                                                                            <label for="">Nomer Registrasi</label>
-                                                                            <input type="text" disabled value="{{ $q->no_registrasi }}" class="form-control">
+                                                                            <label for="">Nomer Rekam Medis</label>
+                                                                            <input type="text" disabled value="{{ $q->no_rekam_medis }}" class="form-control">
                                                                         </div>
                                                                         <div class="col-md-6">
                                                                             <label for="">Nama Pasien</label>
-                                                                            <input type="text" disabled value="{{ $q->name }}" class="form-control">
+                                                                            <input type="text" disabled value="{{ $q->nama_pasien }}" class="form-control">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -128,8 +129,8 @@
                                                         <!-- /.modal-content -->
                                                     </div>
                                                     <!-- /.modal-dialog -->
-                                                    </div>
-                                                    <!-- /.modal -->
+                                                </div>
+                                                <!-- /.modal -->
                                             </td>
                                         </tr>
                                         <?php $nomer++?>
@@ -146,7 +147,7 @@
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                         <th>No</th>
-                                        <th>Nomer Registrasi</th>
+                                        <th>Nomer Rekam Medis</th>
                                         <th>tanggal Registrasi</th>
                                         <th>Nama</th>
                                         <th>Keluhan</th>
@@ -160,7 +161,7 @@
                                         @foreach ($query2 as $q2)
                                         <tr>
                                             <td>{{$nomer }}</td>
-                                            <td>{{ $q2->no_registrasi }}</td>
+                                            <td>{{ $q2->no_rekam_medis }}</td>
                                             <td>{{ $q2->tgl_pemeriksaan }}</td>
                                             <td>{{ $q2->nama_pasien }}</td>
                                             <td>{{ $q2->keluhan }}</td>
@@ -174,8 +175,8 @@
                                            <td>{{$q2->status }}</td>
                                            <td>{{ $q2->nama_dokter }}</td>
                                             <td>
-                                                {{-- <a href="{{ route('registerobat') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a> --}}
-                                                <a href="{{ route('registerobat', $q2->id_pemeriksaan) }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
+                                                <a href="{{ route('registerobat') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
+                                                {{-- <a href="{{ route('registerobat', $q2->id_pemeriksaan) }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a> --}}
                                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#modal-default{{ $q2->id }}">
                                                     <i class="fa fa-stethoscope"></i>
                                                 </button>

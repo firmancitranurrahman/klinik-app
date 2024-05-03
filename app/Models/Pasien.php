@@ -11,6 +11,7 @@ class Pasien extends Model
     protected $table='pasiens';
 
     protected $fillable=[  
+        'no_rekam_medis',
         'name',
         'umur',
         'golongan_darah',

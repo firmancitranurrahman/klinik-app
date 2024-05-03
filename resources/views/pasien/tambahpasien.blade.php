@@ -26,6 +26,13 @@
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="form-group">
+                                        <label for="nama">No Rekam Medis</label>
+                                        <input class="form-control" type="text" value="{{ $no_rekam_medis }}" name="no_rekam_medis" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-7">
+                                    <div class="form-group">
                                         <label for="nama">Nama</label>
                                         <input type="text" class="form-control" name="name">
                                     </div>
