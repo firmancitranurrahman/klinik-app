@@ -27,34 +27,44 @@ class PasienController extends Controller
     }
 
     public function listdatapelayanan(){
-       
+           
 
-            $query=Pemeriksaan::with(['pelayanans'])
-            ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
-            ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
-            ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
-            ->where('status', 'Dalam Antrian')
-            ->select('pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
-            ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
-            ->get();
-
-            $query2=Pemeriksaan::with(['pelayanans'])
-            ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
-            ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
-            ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
-            ->select('pemeriksaans.id AS id_pemeriksaan','pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
-            ->where('status', 'Sudah Diperiksa')
-
-            ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
-            ->get();
-
-        
+           
         $pelayanan= Pelayanan::all();
         
         // return dd($query);
-        return view('pasien.listdatapelayanan',['query'=>$query,'query2'=>$query2,'pelayanan'=>$pelayanan]);
-        
+        // return view('pasien.listdatapelayanan',['query'=>$query,'query2'=>$query2,'pelayanan'=>$pelayanan]);    
     }
+    
+    public function listdatabelumdiperiksa(){
+        $pemeriksaan=Pemeriksaan::with(['pelayanans'])
+        ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
+        ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+        ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
+        ->where('status', 'Dalam Antrian')
+        ->select('pemeriksaans.*','pelayanans.nama_pelayanan', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
+        ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+        ->get();
+
+        $pelayanan= Pelayanan::all();
+
+        return view('pasien.listdatabelumdiperiksa',['pemeriksaan'=>$pemeriksaan,'pelayanan'=>$pelayanan]);
+        // return dd($pemeriksaan);
+    }
+
+    public function listdatasudahdiperiksa(){
+        $pemeriksaan=Pemeriksaan::with(['pelayanans'])
+        ->Leftjoin('pelayanans', 'pemeriksaans.pelayanan', '=', 'pelayanans.id')
+        ->Leftjoin('pasiens', 'pemeriksaans.pasien', '=', 'pasiens.id')
+        ->Leftjoin('users', 'pemeriksaans.dokter', '=', 'users.id')
+        ->select('pemeriksaans.id AS id_pemeriksaan','pemeriksaans.*','pelayanans.*', 'users.name AS nama_dokter', 'pasiens.name AS nama_pasien','pasiens.no_rekam_medis') // Sertakan kolom 'name' dari tabel 'pelayanans'
+        ->where('status', 'Sudah Diperiksa')
+        ->orderBy('no_rekam_medis', 'desc') // Ganti 'nama_kolom_urutan' dengan kolom yang ingin Anda urutkan
+        ->get();
+        $pelayanan=Pelayanan::all();
+        return view('pasien.listdatasudahdiperiksa',['pemeriksaan'=>$pemeriksaan,'pelayanan'=>$pelayanan]);
+    }
+
     public function tambahdatapasien(){
         $year = date('y');
 
@@ -90,21 +100,31 @@ class PasienController extends Controller
             'email'=>'required',
             'no_rekam_medis'=>'required'
         ]);
-        $pasien=Pasien::create([
-            'name'=>$request->name,
-            'umur'=>$request->umur,
-            'golongan_darah'=>$request->golongan_darah,
-            'nik'=>$request->nik,
-            'tgl_lahir'=>$request->tgl_lahir,
-            'no_rekam_medis'=>$request->no_rekam_medis,
-            'pekerjaan'=>$request->pekerjaan,
-            'status_pernikahan'=>$request->status_pernikahan,
-            'asuransi'=>$request->asuransi,
-            'email'=>$request->email,
-            
-        ]);
 
+        try{
+            $pasien=Pasien::create([
+                'name'=>$request->name,
+                'umur'=>$request->umur,
+                'golongan_darah'=>$request->golongan_darah,
+                'nik'=>$request->nik,
+                'tgl_lahir'=>$request->tgl_lahir,
+                'no_rekam_medis'=>$request->no_rekam_medis,
+                'pekerjaan'=>$request->pekerjaan,
+                'status_pernikahan'=>$request->status_pernikahan,
+                'asuransi'=>$request->asuransi,
+                'email'=>$request->email,
+                
+            ]);
+        session()->flash('success', 'Data Berhasil Disimpan');
         return redirect()->route('listdatapasien');
+
+        }catch(\Exception $e){
+            session()->flash('error', 'Data Gagal Disimpan');
+            return redirect()->route('tambahpasien');
+
+        }
+        
+         
     }
     
     public function registerpelayanan(){
@@ -210,7 +230,7 @@ class PasienController extends Controller
         }
     }
 
-
+ 
 
     
   

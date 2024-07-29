@@ -50,6 +50,14 @@
     .form-fields {
         display: none;
     }
+
+    .inactive-row {
+      background-color: #f8d7da; /* Warna latar belakang merah muda */
+      color: #721c24; /* Warna teks merah */
+  }
+  .inactive-row td {
+      cursor: not-allowed; /* Indikator kursor */
+  }
 </style> 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -231,7 +239,19 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ 'listdatapelayanan' }}"><i class="fa fa-circle-o"></i> List Data Pelyanan</a></li>
+            {{-- <li><a href="{{ 'listdatapelayanan' }}"><i class="fa fa-circle-o"></i> List Data Pelyanan</a></li> --}}
+            <li class="treeview">
+              <a href="#"><i class="fa fa-circle-o"></i> List Data Pelayanan
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{{ 'listdatabelumdiperiksa' }}"><i class="fa fa-circle-o"></i> Belum Di Periksa</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Sudah Di Periksa</a></li>
+              </ul>
+            </li>
+
             <li><a href="{{ 'registerpelayanan' }}"><i class="fa fa-circle-o"></i> <span>Register Pelayanan</span></a></li>
           </ul>
         </li>
@@ -244,7 +264,7 @@
     </section>
     <!-- /.sidebar -->
   </aside>
-
+  
   @yield('content')
 
  
@@ -255,6 +275,8 @@
     <strong>Copyright &copy; 2014-2019 <a href="https://adminlte.io">AdminLTE</a>.</strong> All rights
     reserved.
   </footer>
+
+  
 
   {{-- <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark" style="display: none;">
@@ -743,6 +765,196 @@
 
 
 
+
+<script>
+  // Script untuk menyembunyikan callout setelah 2 detik
+  document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+          // var callout = document.getElementById('callout');
+          var calloutSuccess = document.getElementById('callout-success');
+          var calloutError = document.getElementById('callout-error');
+          // if (callout) {
+          //     callout.style.display = 'none';
+          // }
+          if (calloutSuccess) {
+                    calloutSuccess.style.display = 'none';
+                }
+          if (calloutError) {
+              calloutError.style.display = 'none';
+          }
+      }, 2000);
+  });
+</script>
+
+<script>
+  function updateGrandTotal() {
+    var grandTotal = 0;
+    $('#pembelian-obat tbody tr').each(function() {
+        var total = parseFloat($(this).find('.total').text());
+        grandTotal += total;
+    });
+    $('#grand-total').text(grandTotal.toFixed(0));
+}
+      var nomorUrut = 1; // Variabel untuk menyimpan nomor urut baris
+  $(document).ready(function() {
+    var ambilNamaObatUrl = "{{ route('ambilNamaObat', ':nama_obat') }}";
+      // Mengatur tindakan ketika baris tabel obat di-klik
+      $('#tabel-obat tbody').on('click', 'tr', function() {
+          // Mendapatkan nama obat dari kolom kedua (indeks 1) di baris yang di-klik
+          // Cek apakah baris memiliki stok 0 (misalnya, dengan kelas 'inactive-row')
+          if ($(this).hasClass('inactive-row')) {
+              return; // Abaikan klik jika baris tidak aktif
+          }
+          var nama_obat = $(this).find('td:eq(2)').text(); // Ganti indeks sesuai dengan kolom nama obat
+
+          // Menetapkan nilai nama obat ke input obat_selected
+          $('#obat_selected').val(nama_obat);
+          
+      });
+
+      // Contoh logika untuk menambahkan kelas 'inactive-row' berdasarkan stok
+    $('#tabel-obat tbody tr').each(function() {
+        var stok = parseInt($(this).find('td.stok').text(), 10); // Asumsi stok ada di kolom dengan kelas 'stok'
+        if (stok === 0) {
+            $(this).addClass('inactive-row');
+        }
+    });
+
+   
+
+   
+    $('#add-obat').on('click', function() {
+            // Mendapatkan nama obat dari input obat_selected
+            var nama_obat = $('#obat_selected').val();
+            var jumlah= 1;
+            
+            if (nama_obat !== "") {
+              var url = ambilNamaObatUrl.replace(':nama_obat', nama_obat);
+
+              var buttonAction = '<button class="btn btn-success fa fa-plus tambah-jumlah">Tambah</button> <button class="btn btn-danger fa fa-minus kurang-jumlah">Kurang</button>';
+              // AJAX request untuk mengambil data obat
+                $.ajax({
+                    // url: '/ambilNamaObat/' + nama_obat,
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        if (data) {
+                            var stok = data.stok;
+                            var harga_jual= parseFloat(data.harga_jual);
+                            var total= harga_jual*jumlah; 
+                            // Menambahkan baris baru ke tabel obat terpilih
+                            var newRow = '<tr><td>' + nomorUrut + '</td><td>' + data.kode_obat + '</td><td>' + nama_obat + '</td><td class="jumlah-obat">'+jumlah+'</td><td class="stok">' + data.stok + '</td><td class="harga_jual">' + harga_jual.toFixed(0) + '</td><td class="total">'+ total.toFixed(0) +'</td><td>'+buttonAction+'</td></tr>';
+                            var $newRow = $(newRow);
+                            var $newRow = $(newRow);
+                          if (stok <= 0) {
+                              $newRow.find('.tambah-jumlah').prop('disabled', true); // Nonaktifkan tombol tambah jika stok 0
+                              $newRow.css('background-color', '#ffcccc'); // Tanda visual
+                          }
+
+                            $('#pembelian-obat tbody').append(newRow);
+                            nomorUrut++; // Menambahkan nomor urut
+                            // Mengosongkan input obat_selected setelah ditambahkan
+                            $('#obat_selected').val('');
+                            $('#beli-obat').prop('disabled', false);
+                            updateGrandTotal(); // Perbarui total keseluruhan setelah menambahkan baris
+                        } else {
+                            alert("Data obat tidak ditemukan!");
+                        }
+                    },
+                    error: function() {
+                        alert("Terjadi kesalahan dalam mengambil data obat.");
+                    }
+                });
+            } else {
+                alert("Silakan pilih obat terlebih dahulu!");
+            }
+        });
+
+         // Event listener untuk tombol "Tambah"
+        $('#pembelian-obat').on('click', '.tambah-jumlah', function() {
+          
+            var row = $(this).closest('tr');
+            
+            // var jumlahTd = $(this).closest('tr').find('.jumlah-obat');
+            // var currentJumlah = parseInt(jumlahTd.text(), 10);
+            var jumlahTd = row.find('.jumlah-obat');
+            var stokTd = row.find('.stok');
+            var currentJumlah = parseInt(jumlahTd.text(), 10);
+            var stok = parseInt(stokTd.text(), 10);
+            
+            var hargaTd= row.find('.harga_jual');
+            var totalTd= row.find('.total');
+            var harga = parseFloat(hargaTd.text());
+
+            if(currentJumlah<stok){
+              jumlahTd.text(currentJumlah + 1);
+              var newTotal = harga * (currentJumlah + 1);
+              totalTd.text(newTotal.toFixed(0));
+              updateGrandTotal();
+
+            }else{
+              alert('Jumlah obat tidak boleh melebihi stok yang tersedia.');
+            }
+
+        });
+
+        // Event listener untuk tombol "Kurang"
+        $('#pembelian-obat').on('click', '.kurang-jumlah', function() {
+            var row = $(this).closest('tr');
+            var jumlahTd = row.find('.jumlah-obat');
+            var hargaTd = row.find('.harga_jual');
+            var totalTd = row.find('.total');
+            var currentJumlah = parseInt(jumlahTd.text(), 10);
+            var harga = parseFloat(hargaTd.text());
+            if (currentJumlah > 1) {
+                jumlahTd.text(currentJumlah - 1);
+                var newTotal = harga * (currentJumlah - 1);
+                totalTd.text(newTotal.toFixed(0));
+                updateGrandTotal();
+
+            }
+
+            
+        });
+
+        $('#beli-obat').on('click', function() {     
+          var updateStokUrl = "{{ route('updateStok') }}";             
+          var obatData = [];
+              $('#pembelian-obat tbody tr').each(function() {
+                  var row = $(this);
+                  var kode_obat = row.find('td').eq(1).text();
+                  var jumlah = parseInt(row.find('.jumlah-obat').text(), 10);
+                  obatData.push({ kode_obat: kode_obat, jumlah: jumlah });
+              });
+              $.ajax({
+                url: updateStokUrl, // URL endpoint untuk memperbarui stok
+                type: 'POST',
+                data: JSON.stringify({ pembelian: obatData }),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Pembelian obat berhasil!');
+                        // Reset tabel atau melakukan aksi lain setelah pembelian berhasil
+                        $('#pembelian-obat tbody').empty();
+                        $('#grand-total').text('0');
+                        $('#beli-obat').prop('disabled', true);
+                        window.location.reload(); // Refresh halaman
+                    } else {
+                        alert('Terjadi kesalahan dalam pembelian obat: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Terjadi kesalahan dalam memperbarui stok obat.');
+                }
+              });
+         
+        });
+
+  });
+</script>
 
 
 </body>

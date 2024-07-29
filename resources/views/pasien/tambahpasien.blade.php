@@ -1,6 +1,7 @@
 @extends('layouts.layouts')
 
 @section('content')
+
 <div class="content-wrapper">
     <section class="content-header">
         <h1 class="hidden">
@@ -12,8 +13,14 @@
             <li class="active">Tambah Pasien</li>
           </ol>
     </section><br>
+   
     <section class="content">
         <div class="row">
+            @if (session('error'))
+                <div id="callout-error" class="callout callout-danger">
+                    <h4>{{ session('error') }}</h4>
+                </div>
+             @endif
         <form method="post" action="{{ url('/storepasien') }}">
             @csrf
           <div class="col-md-8">
@@ -61,11 +68,18 @@
                                     </div>
                                 </div>
                                 <div class="col-md-7">
-                                    <div class="form-group">
-                                        <label for="nama">No Kartu Keluarga</label>
-                                        <input type="text" class="form-control" name="nik">
-                                    </div>
-                               </div>
+                                    <input type="checkbox" id="ktp"> Mempunyai KTP
+                                </div>
+                                <div class="ktp">
+                                    <div class="col-md-7">
+                                        <div class="form-group">
+                                            <label for="nama">Kartu Tanda Penduduk</label>
+                                            <input type="text" class="form-control" name="nik" id=nik>
+                                        </div>
+                                   </div>
+                                </div>
+                                
+                                
                                
                                 <div class="col-md-7">
                                     <div class="form-group">

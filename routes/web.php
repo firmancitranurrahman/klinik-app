@@ -69,16 +69,22 @@ Route::put('/updatepemeriksaan/{id}', [PasienController::class,'updatepemeriksaa
 Route::post('/prosespemeriksaan', [PasienController::class, 'prosespemeriksaan'])->name('prosespemeriksaan');
 Route::get('/listdatapelayanan', [PasienController::class,'listdatapelayanan'])->name('listdatapelayanan');
 
+Route::get('/listdatabelumdiperiksa', [PasienController::class,'listdatabelumdiperiksa'])->name('listdatabelumdiperiksa');
+
+Route::get('/listdatasudahdiperiksa', [PasienController::class,'listdatasudahdiperiksa'])->name('listdatasudahdiperiksa');
 
 Route::get('/listdataobat', [ObatController::class,'listdataobat'])->name('listdataobat');
 Route::get('/tambahobat', [ObatController::class,'tambahobat'])->name('tambahobat');
 
 
-// Route::get('/registerobat/{id_pemeriksaan}', [ObatController::class,'registerobat'])->name('registerobat');
-Route::get('/registerobat', [ObatController::class,'registerobat'])->name('registerobat');
-
+Route::get('/registerobat/{id}', [ObatController::class,'registerobat'])->name('registerobat');
 Route::post('/storeobat', [ObatController::class,'storeobat'])->name('storeobat');
+Route::get('/editobat/{id}', [ObatController::class,'editobat'])->name('editobat');
 
+// Jika menggunakan web.php
+Route::post('/updateStok', [ObatController::class, 'updateStok'])->name('updateStok');
+
+Route::get('/ambilNamaObat/{nama_obat}',[ObatController::class,'ambilNamaObat'])->name('ambilNamaObat');
 
 Route::post('/cetakdata', [PasienController::class, 'cetakdata'])->name('cetakdata');
 Route::post('/cetak-pdf', 'PasienController@cetakPDF');

@@ -42,6 +42,7 @@
                                         @foreach ($query as $q)
                                         <tr>
                                             <td>{{$nomer }}</td>
+                                            <td>{{ $q->id }}</td>
                                             <td>{{ $q->no_rekam_medis }}</td>
                                             <td>{{ $q->tgl_pemeriksaan }}</td>
                                             <td>{{ $q->nama_pasien }}</td>
@@ -56,7 +57,8 @@
         
                                             <td>{{$q->status }}</td>
                                             <td>
-                                                <a href="{{ url('registerobat') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
+                                                <a href="{{ url('registerobat/' . $q->id) }}" type="button" class="btn btn-success" >edit</a>
+
                                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#modal-default{{ $q->id }}">
                                                     <i class="fa fa-stethoscope"></i>
                                                 </button>
@@ -176,7 +178,6 @@
                                            <td>{{ $q2->nama_dokter }}</td>
                                             <td>
                                                 <a href="{{ route('registerobat') }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a>
-                                                {{-- <a href="{{ route('registerobat', $q2->id_pemeriksaan) }}" type="button" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Obat</a> --}}
                                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#modal-default{{ $q2->id }}">
                                                     <i class="fa fa-stethoscope"></i>
                                                 </button>

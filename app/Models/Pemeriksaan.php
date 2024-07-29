@@ -12,6 +12,7 @@ class Pemeriksaan extends Model
     protected $table='pemeriksaans';
 
     protected $fillable=[  
+        'id',
         'no_registrasi',
         'tgl_pemeriksaan',
         'pelayanan',

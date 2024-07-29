@@ -30,13 +30,20 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php $nomer=1 ;?>
+                                @foreach ($obat as $o)
                                 <tr>
-                                    <td>No</td>
-                                    <td>1</td>
-                                    <td>1</td>
-                                    <td>1</td>
-                                    <td>1</td>
+                                    <td>{{ $nomer ; }}</td>
+                                    <td>{{ $o->nama_obat }}</td>
+                                    <td>{{ $o->stok }}</td>
+                                    <td>{{ $o->satuan }}</td>
+                                    <td>
+                                        <a href="{{ url('editobat/' . $o->id) }}" type="button" class="btn btn-success" >edit</a>
+                                        <a href="" type="button" class="btn btn-danger" >edit</a>
+                                    </td>
                                 </tr>
+                                <?php $nomer++;?>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

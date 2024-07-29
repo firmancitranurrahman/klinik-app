@@ -16,6 +16,17 @@
         <!-- Main content -->
     <section class="content">
         <div class="row">
+          {{-- @if (session('success'))
+              <div id="callout" class="callout callout-success">
+                  <h4>{{ session('success') }}</h4>
+              </div>
+          @endif --}}
+
+          @if (session('success'))
+            <div id="callout-success" class="callout callout-success">
+                <h4>{{ session('success') }}</h4>
+            </div>
+        @endif
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header">

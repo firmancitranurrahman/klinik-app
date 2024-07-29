@@ -24,6 +24,7 @@
                         <div class="box-body">                      
                             <div class="container">
                                 <div class="row">
+
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             <label for="nama">Kode Obat</label>
@@ -52,21 +53,12 @@
                                             <input type="text" class="form-control" name="stok">
                                         </div>
                                     </div>
-
-                                    <div class="col-md-7">
-                                        <div class="form-group">
-                                            <label for="nama">Harga Beli</label>
-                                            <input type="text" class="form-control" name="harga_beli">
-                                        </div>
-                                    </div>
-
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             <label for="nama">Harga Jual</label>
-                                            <input type="text" class="form-control" name="harga_jual">
+                                            <input type="text" class="form-control" name="harga">
                                         </div>
                                     </div>
-                                                                                  
                                 </div>
                                 <button class="btn btn-success"type="submit">simpan</button>
                             </div>                     
